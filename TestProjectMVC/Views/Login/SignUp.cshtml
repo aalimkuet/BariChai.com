@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "SignUp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Sign Up</title>
+
+<style>
+    body {
+        background-color: honeydew;
+        background-image: url('../../w3login/images/login-img.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+        font-family: 'Raleway', sans-serif;
+    }
+
+    h1 {
+        font-size: 60px;
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: 2px;
+        color: #AB2A32;
+        margin: 57px 0px;
+        margin-bottom: 19px;
+    }
+
+    #login-div {
+        background-color: gray;
+        position: absolute;
+        left: 40%;
+        top: 40%;
+        border: 1px dotted White;
+        padding: 10px 10px;
+    }
+
+    .field-validation-error {
+        color: red;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    debugger;
+
+    $('#txtpassword1, #txtpassword2').on('keyup', function () {
+        if ($('#txtpassword1').val() == $('#txtpassword2').val()) {
+            $('#message').html('Matching').css('color', 'Green');
+        } else
+            $('#message').html('Not Matching').css('color', 'red');
+    });
+
+
+    var check = function () {
+        if (document.getElementById('txtpassword1').value ==
+            document.getElementById('txtpassword2').value) {
+            document.getElementById('message').style.color = 'green';
+            document.getElementById('message').innerHTML = 'matching';
+        } else {
+            document.getElementById('message').style.color = 'red';
+            document.getElementById('message').innerHTML = 'not matching';
+        }
+    }
+
+    function SaveMethod()
+    {
+
+        var userid = $('#txtEmail').val();
+        var pass1 = $('#txtpassword1').val();
+        //var pass2 = $('#txtpassword2').val();
+        var Name = $('#txtUserName').val();
+
+
+        var objuser = {
+            UserId: userid,
+            password: pass1,
+            UserName: Name   
+        }
+        var message = "";
+        debugger; 
+        $.ajax({
+            type: "POST",
+            url: "/Login/DataSignUp",
+            data: objuser,
+            //datatype:'json',
+            //contentType: 'application/json',
+            success: function (data) {
+
+              
+                $.each(data, function (id, str) {
+                    message = str;
+
+                });
+
+                debugger;
+
+                if ('Email already in use' == message) {
+                    alert(message);
+                }
+
+                else {
+                    window.location.replace("http://localhost:3607/Login/Index");
+                    alert("Sign Up successful.");
+                    reset();
+                }
+
+                //window.location.replace("http://localhost:3607/Login/Index");
+                //reset();
+                debugger;
+
+            },
+            error: function () {
+                alert("Sign Up failed.");
+            }
+
+        });
+    }
+
+
+    function reset()
+    {
+        $('#txtEmail').val(''); 
+        $('#txtpassword1').val('');
+        $('#txtpassword2').val('');
+        $('#txtUserName').val('');
+    }
+
+</script>
+
+
+<h2 style="text-align:center; color:darkblue; font-weight:600; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">BariChai.com</h2>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-6" style="margin-left:30%">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Sign Up</h3>
+                    </div>
+
+                    <form role="form">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" class="form-control" id="txtEmail" placeholder="Enter email">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Name</label>
+                                <input type="text" class="form-control" id="txtUserName" placeholder="Enter Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input type="password" class="form-control" id="txtpassword1" placeholder="Password" onkeyup="check()">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Confirm Password</label>
+
+                                <input type="password" class="form-control" id="txtPassword2" placeholder="Password" onkeyup="check()">
+                                @*<span id='message'></span>*@
+
+                            </div>
+                            @*<div class="form-group">
+            <label for="exampleInputFile">File input</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="exampleInputFile">
+                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                </div>
+                <div class="input-group-append">
+                    <span class="input-group-text" id="">Upload</span>
+                </div>
+            </div>
+        </div>*@
+                            @*<div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>*@
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary" onclick="SaveMethod()">Submit</button>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!--/.col (right) -->
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+

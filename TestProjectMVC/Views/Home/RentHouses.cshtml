@@ -1,0 +1,252 @@
+﻿
+@{
+    ViewBag.Title = "RentHouses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<title>@ViewBag.Title</title>
+
+
+
+
+<fieldset>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkjMUe_ptHXX_Fqc-XxdjNC3TLFYUmntw&callback=myMap"></script>
+
+    <script>
+
+        var position = [23.7559479133, 90.3868087055];
+
+        function initialize() {
+
+
+            var latlng = new google.maps.LatLng(position[0], position[1]);
+
+
+            var myOptions = {
+                zoom: 16,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            map = new google.maps.Map(document.getElementById("mapCanvas"), myOptions);
+
+            marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: "Latitude:" + position[0] + " | Longitude:" + position[1]
+            });
+
+            google.maps.event.addListener(map, 'click', function (event) {
+                var result = [event.latLng.lat(), event.latLng.lng()];
+                transition(result);
+            });
+        }
+
+        //Load google map
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+
+        var numDeltas = 100;
+        var delay = 10; //milliseconds
+        var i = 0;
+        var deltaLat, lattt, longg;
+        var deltaLng;
+
+        function transition(result) {
+            i = 0;
+            deltaLat = (result[0] - position[0]) / numDeltas;
+            deltaLng = (result[1] - position[1]) / numDeltas;
+            moveMarker();
+        }
+
+
+        function moveMarker() {
+            position[0] += deltaLat;
+            position[1] += deltaLng;
+
+            debugger;
+
+            lattt = position[0];
+            longg = position[1];
+
+
+            var latlng = new google.maps.LatLng(position[0], position[1]);
+            marker.setTitle("Latitude:" + position[0] + " | Longitude:" + position[1]);
+            marker.setPosition(latlng);
+            if (i != numDeltas) {
+                i++;
+                setTimeout(moveMarker, delay);
+            }
+        }
+
+
+
+        function SaveData() {
+
+
+            var Description = $('#txtdescription').val();
+            var Price = $('#txtPrice').val();
+            var Contact = $('#txtContact').val();
+            var houseType = $("#txtHouseType").val();
+
+            var mapPos = {
+
+                Latitude: lattt,
+                Longitude: longg,
+                Description: Description,
+                Price: Price,
+                Contact: Contact,
+                HouseType: houseType
+
+            }
+
+            console.log(mapPos);
+            debugger;
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/GoogleMap1",
+                data: mapPos,
+                //datatype:'json',
+                //contentType: 'application/json',
+                success: function () {
+                    reset();
+                    alert("Info saved successfully.");
+                    debugger;
+                },
+                error: function () {
+                    alert("Info not saved successfully.");
+                }
+
+            });
+
+        }
+
+        function reset()
+        {
+
+            $("#txtdescription").val('');
+            $("#txtPrice").val('');
+            $("#txtContact").val('');
+            $("#txtHouseType").val('');
+        }
+        
+
+
+    </script>
+    <div style="text-align:right">
+        <a href="~/Login/Logout">Log Out</a>
+    </div>
+  
+
+    <div class="row gutters">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 style="font-weight:600; color:darkblue">BariChai.com</h2>
+                    <h4 style="color:firebrick">Rent Houses</h4>
+                </div>
+                <div class="card-body">
+
+                    <div class="form row">
+                        <label class="col-md-2">House Description</label>
+                        <div class="col-md-9">
+                            <textarea class="form-control" id="txtdescription" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="row"></div>
+                    <div class="form row">
+
+                        <label for="inputState" class="col-md-2">Price</label>
+                        <div class="col-md-4">
+                            <input class="form-control" id="txtPrice" />
+                        </div>
+                        @*<div class="col-md-1"></div>*@
+                        <label class="col-md-1">Contact</label>
+                        <div class="col-md-4">
+                            <input class="form-control" id="txtContact" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-2">House Type</label>
+                        <div class="col-sm-4">
+                            <input class="form-control" id="txtHouseType" />
+                        </div>
+                        <div class="col-sm-5" style="text-align:right">
+                            <button type="submit" class="btn btn-primary"  onclick="SaveData()">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mapCanvas" style="height:500px;width:100%;"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</fieldset>
+<div class="footer footer_w3layouts_section_1its">
+    <div class="container">
+        <div class="footer-top">
+            <div class="row">
+                <div class="col-md-3 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>About Us</h3>
+                    </div>
+                    <div class="footer-text">
+                        <p>
+                            This website is the beta version under development for the purpose of getting MIT degree from IIT, DU.
+                            For getting Master in Information Technology degree, This project is a fundamental requirement.
+                        </p>
+                        <ul class="social_section_1info">
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>Contact</h3>
+                    </div>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker"></i>IIT, University of Dhaka</p>
+                        <p><i class="fas fa-phone"></i>Phone : +8801733202269</p>
+                        <p><i class="far fa-envelope"></i>Email : <a href="mailto:info@example.com">rifat.rcc@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="col-md-2 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>Navigation</h3>
+                    </div>
+                    <ul class="links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#" class="scroll">About</a></li>
+                        <li><a href="#" class="scroll">Services</a></li>
+                        <li><a href="#" class="scroll">Team</a></li>
+                        <li><a href="#" class="scroll">Gallery</a></li>
+                        <li><a href="#" class="scroll">news</a></li>
+                        <li><a href="#" class="scroll">contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© F.M. Faijus Salehin Rifat|IIT, DU.</p>
+        </div>
+    </div>
+</div>

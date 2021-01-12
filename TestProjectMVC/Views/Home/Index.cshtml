@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "BariChai.com";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkjMUe_ptHXX_Fqc-XxdjNC3TLFYUmntw&callback=myMap" type="text/javascript"></script>
+<script type="text/javascript">
+    // check DOM Ready
+
+
+
+    $(document).ready(function () {
+        // execute
+        (function () {
+            // map options
+            var options = {
+                zoom: 14,
+                center: new google.maps.LatLng(23.7559479133, 90.3868087055), // centered US
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                mapTypeControl: false
+            };
+
+            // init map
+            var map = new google.maps.Map(document.getElementById('map_canvas'), options);
+
+            // NY and CA sample Lat / Lng
+
+
+
+            var southWest = new google.maps.LatLng(40.744656, -74.005966);
+            var northEast = new google.maps.LatLng(34.052234, -118.243685);
+            var lngSpan = northEast.lng() - southWest.lng();
+            var latSpan = northEast.lat() - southWest.lat();
+
+
+
+            var latt, lang, description;
+            var geo;
+
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "/Home/ViewHouses",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    var dd = data;
+                    geo = data;
+                    var len;
+
+
+                    debugger;
+                    $.each(data, function (id, MapPosition) {
+
+                        len = MapPosition.length;
+
+                        $.each(MapPosition, function (i, v) {
+
+                            console.log(len + ' ' + v.Latitude + ' ' + v.Longitude + ' ' + v.Description);
+
+                            var str = 'Owner Name: '.bold() + v.UserName + '<br>' + 'Description: '.bold() + v.Description + '<br>' + 'House Type: '.bold() + v.HouseType + '<br>' + 'Price: '.bold() + v.Price + '<br>' + 'Contact: '.bold() + v.Contact
+                            var marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(v.Latitude, v.Longitude),
+                                map: map,
+                                title: 'Click Me'
+                            });
+
+                            // process multiple info windows
+                            (function (marker, i) {
+                                // add click event
+                                google.maps.event.addListener(marker, 'click', function () {
+                                    infowindow = new google.maps.InfoWindow({
+                                        content: str
+
+                                    });
+                                    infowindow.open(map, marker);
+                                });
+                            })(marker, i);
+
+                            //mapMarker(len, v.Latitude, v.Longitude, v.Description)
+
+                        });
+
+                    });
+
+                    /// alert("Success");
+
+                    debugger;
+                },
+                error: function () {
+                    alert("Something went wrong")
+                }
+            });
+
+        })();
+    });
+</script>
+
+<div class="row gutters">
+    <div class="col-md-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header" style="font-size:x-large; font-weight:600; color:saddlebrown">Find Your Desired House or Flat!</div>
+                <div id="map_canvas" style="width: 100%; height:600px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer footer_w3layouts_section_1its">
+    <div class="container">
+        <div class="footer-top">
+            <div class="row">
+                <div class="col-md-3 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>About Us</h3>
+                    </div>
+                    <div class="footer-text">
+                        <p>
+                            This website is the beta version under development for the purpose of getting MIT degree from IIT, DU.
+                            For getting Master in Information Technology degree, This project is a fundamental requirement.
+                        </p>
+                        <ul class="social_section_1info">
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>Contact</h3>
+                    </div>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker"></i>IIT, University of Dhaka</p>
+                        <p><i class="fas fa-phone"></i>Phone : +8801733202269</p>
+                        <p><i class="far fa-envelope"></i>Email : <a href="mailto:info@example.com">rifat.rcc@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="col-md-2 footer-grid_section_1its_w3">
+                    <div class="footer-title">
+                        <h3>Navigation</h3>
+                    </div>
+                    <ul class="links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#" class="scroll">About</a></li>
+                        <li><a href="#" class="scroll">Services</a></li>
+                        <li><a href="#" class="scroll">Team</a></li>
+                        <li><a href="#" class="scroll">Gallery</a></li>
+                        <li><a href="#" class="scroll">news</a></li>
+                        <li><a href="#" class="scroll">contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© F.M. Faijus Salehin Rifat|IIT, DU.</p>
+        </div>
+    </div>
+</div>
+
+
+
+

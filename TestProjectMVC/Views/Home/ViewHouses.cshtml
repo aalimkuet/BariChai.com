@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "ViewHouses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>View Houses</h2>
+
+
+<div class="latlng"> -33.91722, 151.23064</div>
+<div class="latlng"> -32.81620, 151.11313</div>
+<div class="latlng"> -32.71620, 151.01313</div>
+
+<div id="map" style="height:500px;width:100%;"></div>
+<!-- Replace the value of the key parameter with your own API key. -->
+
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkjMUe_ptHXX_Fqc-XxdjNC3TLFYUmntw&callback=initMap">
+</script>
+
+
+
+<script>
+
+    String.prototype.count = function (s1) {
+        return (this.length - this.replace(new RegExp(s1, "g"), '').length) / s1.length;
+    }
+
+
+    function initMap() {
+
+        $.ajax({
+
+           url:"Home/",
+
+
+
+        });
+
+
+        var myLatLng = {
+            lat: -25.363,
+            lng: 131.044
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: myLatLng
+        });
+
+        var geo = $(".latlng").text();
+
+        debugger;
+
+        //get count of lat,lng pairs in geo variable
+        var pairs = geo.count(',');
+
+        for (i = 0; i < pairs; i++) {
+            latitude = parseFloat(geo).toFixed(5);
+            longitudeP = geo.replace(latitude + ',', '');
+            longitude = parseFloat(longitudeP);
+
+            var intlat = Number(latitude);
+            var intlng = Number(longitude);
+
+
+
+            var marker = new google.maps.Marker({
+                position: {
+                    lat: intlat,
+                    lng: intlng
+                },
+                map: map,
+                title: 'Hello World!'
+            });
+
+            geo = geo.replace(latitude + ',', '');
+            geo = geo.replace(longitude, '');
+
+
+            geo = geo.replace(/^[ ]+|[ ]+$/g, '');
+
+        }
+    }
+
+</script>

@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+<!-- jQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+
+    @*<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />*@
+
+    <title>Log In</title>
+
+    @*<style>
+        body {
+            background-color: honeydew;
+            background-image: url('../../w3login/images/login-img.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        h1 {
+            font-size: 60px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 2px;
+            color: #AB2A32;
+            margin: 57px 0px;
+            margin-bottom: 19px;
+        }
+
+        #login-div {
+            background-color: gray;
+            position: absolute;
+            left: 40%;
+            top: 40%;
+            border: 1px dotted White;
+            padding: 10px 10px;
+        }
+
+        .field-validation-error {
+            color: red;
+        }
+    </style>*@
+
+
+<script type="text/javascript">
+
+
+    function SaveMethod() {
+
+        
+
+        var userid = $('#txtEmail').val();
+        var pass1 = $('#txtpassword').val();
+
+        if (userid == '' || pass1 == '') {
+
+            alert('Please Fill the requied fields');
+        }
+
+
+        var objuser = {
+            UserId: userid,
+            password: pass1
+
+        }
+
+        var message="";
+
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Login/UserLogin",
+            data: objuser,
+            success: function (data) {
+
+                $.each(data, function (id, str) {
+                    message = str;
+
+                });
+
+                debugger;
+                
+                if ('Please Enter valid Credential'==message)
+                {
+                    alert(message);
+                }
+                
+                else
+                {
+                    window.location.replace("http://localhost:3607/Home/Index");
+                    alert(message);
+                    reset();
+                }
+            },
+            error: function () {
+                
+            }
+
+        });
+    }
+
+
+    function reset() {
+        $('#txtEmail').val('');
+        $('#txtpassword').val('');
+    }
+
+
+</script>
+
+
+<div style="text-align:center center">@ViewBag.Message</div>
+
+
+<h1 style="text-align:center; color:darkblue; font-weight:600; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">BariChai.com</h1>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-6" style="margin-left:27%">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Login</h3>
+                    </div>
+
+                    <form role="form">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" class="form-control" id="txtEmail" placeholder="Enter email">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input type="password" class="form-control" id="txtpassword" placeholder="Password">
+                            </div>
+                            @*<div class="form-group">
+                                <label for="exampleInputFile">File input</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="exampleInputFile">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="">Upload</span>
+                                    </div>
+                                </div>
+                            </div>*@
+                            @*<div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                            </div>*@
+                        </div>
+                        <!-- /.card-body -->
+                        
+                        <div>
+                            @ViewBag.SuccessMessage
+                            
+                        </div>
+                        
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary" onclick="SaveMethod()">Submit</button>
+                        </div>
+                    </form>
+                    
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!--/.col (right) -->
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<div class="col-md-12" style="text-align:center;">
+    <a href="~/Login/SignUp">Not registered yet?     <u>  Sign Up</u></a>
+</div>
+
+
+<div id="ex1" class="modal">
+    <p>Thanks for clicking. That felt good.</p>
+    <a href="#" rel="modal:close">Close</a>
+</div>
+

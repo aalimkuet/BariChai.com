@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Multiple Markers Google Maps</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkjMUe_ptHXX_Fqc-XxdjNC3TLFYUmntw&callback=myMap" type="text/javascript"></script>
+    <script type="text/javascript">
+        // check DOM Ready
+
+
+
+        $(document).ready(function() {
+            // execute
+            (function() {
+                // map options
+                var options = {
+                    zoom: 5,
+                    center: new google.maps.LatLng(23.7789301658, 90.4280450809), // centered US
+                    mapTypeId: google.maps.MapTypeId.TERRAIN,
+                    mapTypeControl: false
+                };
+
+                // init map
+                var map = new google.maps.Map(document.getElementById('map_canvas'), options);
+
+                // NY and CA sample Lat / Lng
+
+
+
+                var southWest = new google.maps.LatLng(40.744656, -74.005966);
+                var northEast = new google.maps.LatLng(34.052234, -118.243685);
+                var lngSpan = northEast.lng() - southWest.lng();
+                var latSpan = northEast.lat() - southWest.lat();
+
+
+
+                var latt, lang, description;
+                var geo;
+
+                debugger;
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/ViewHouses",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        var dd = data;
+                        geo = data;
+                        var len;
+
+
+                        debugger;
+                        $.each(data, function (id, MapPosition) {
+
+                            len = MapPosition.length;
+
+                            $.each(MapPosition, function (i, v) {
+
+                                console.log(len +' '+ v.Latitude +' '+ v.Longitude +' '+ v.Description);
+
+
+
+                                var marker = new google.maps.Marker({
+                                    position: new google.maps.LatLng(v.Latitude, v.Longitude),
+                                    map: map,
+                                    title: 'Click Me ' + i
+                                });
+
+                                // process multiple info windows
+                                (function(marker, i) {
+                                    // add click event
+                                    google.maps.event.addListener(marker, 'click', function() {
+                                        infowindow = new google.maps.InfoWindow({
+                                            content: v.Description
+                                        });
+                                        infowindow.open(map, marker);
+                                    });
+                                })(marker, i);
+                            
+
+
+                                //mapMarker(len, v.Latitude, v.Longitude, v.Description)
+
+
+                            });
+
+                        });
+
+                        /// alert("Success");
+
+                        debugger;
+                    },
+                    error: function () {
+                        alert("Something went wrong")
+                    }
+
+
+                });
+
+
+
+
+
+                // set multiple marker
+                //for (var i = 0; i < 20; i++) {
+                //    // init markers
+                //    var marker = new google.maps.Marker({
+                //        position: new google.maps.LatLng(southWest.lat() + latSpan * Math.random(), southWest.lng() + lngSpan * Math.random()),
+                //        map: map,
+                //        title: 'Click Me ' + i
+                //    });
+
+                //    // process multiple info windows
+                //    (function(marker, i) {
+                //        // add click event
+                //        google.maps.event.addListener(marker, 'click', function() {
+                //            infowindow = new google.maps.InfoWindow({
+                //                content: 'Hello, World!!'
+                //            });
+                //            infowindow.open(map, marker);
+                //        });
+                //    })(marker, i);
+                //}
+            })();
+        });
+    </script>
+</head>
+<body>
+    <div id="map_canvas" style="width: 800px; height:500px;"></div>
+</body>
+</html>
+
+
+<address>
+    One Microsoft Way<br />
+    Redmond, WA 98052-6399<br />
+    <abbr title="Phone">P:</abbr>
+    425.555.0100
+</address>
+
+<address>
+    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
+    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+</address>
